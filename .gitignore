@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment and secrets
+.env
+
+# FAISS indices and database (generated at runtime)
+data/indices/
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Logs
+*.log
+/tmp/nexus-*.log
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
