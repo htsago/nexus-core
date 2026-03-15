@@ -92,6 +92,114 @@ Key variables:
 | `NEXUS_STORAGE_PATH` | `data/indices` | Directory for FAISS index shards |
 | `SQLITE_DB_PATH` | `data/nexus.db` | SQLite database file |
 | `NEXUS_SIMILARITY_THRESHOLD` | `0.7` | Minimum relevance score for results |
+| `NEXUS_API_KEY` | _(empty)_ | Bearer token required for all MCP requests |
+| `NEXUS_PUBLIC_URL` | _(empty)_ | Public base URL of the server (e.g. `https://nexus.herman-tsago.tech`), used for OAuth metadata endpoints |
+
+---
+
+## Authentication
+
+NEXUS Core requires authentication for every MCP request. It supports two modes simultaneously:
+
+### Mode 1 — Static Bearer Token (programmatic clients)
+
+Suitable for VS Code, LangChain, curl, and any HTTP client that can set headers.
+
+Generate a secure key:
+
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Set it in `.env`:
+
+```env
+NEXUS_API_KEY="<your-generated-key>"
+```
+
+Then pass it as a header:
+
+```
+Authorization: Bearer <your-generated-key>
+```
+
+### Mode 2 — OAuth 2.0 + PKCE (browser-based clients)
+
+Suitable for Claude.ai and any MCP client that supports OAuth authorization code flow with PKCE and dynamic client registration (RFC 7591).
+
+Set the public URL in `.env`:
+
+```env
+NEXUS_PUBLIC_URL="https://nexus.herman-tsago.tech"
+```
+
+OAuth endpoints advertised at `/.well-known/oauth-authorization-server`:
+
+| Endpoint | Path |
+|---|---|
+| Authorization | `/authorize` |
+| Token | `/token` |
+| Registration | `/register` |
+| Consent UI | `/consent` |
+
+The consent page asks for the `NEXUS_API_KEY` — the same key used for static Bearer auth. No separate password is needed.
+
+![NEXUS Core consent page](static/img/consent-page.png)
+
+---
+
+## Connecting Clients
+
+### VS Code / GitHub Copilot
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "nexus-core": {
+      "type": "http",
+      "url": "https://nexus.herman-tsago.tech/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-api-key>"
+      }
+    }
+  }
+}
+```
+
+### Claude.ai
+
+1. Open **Settings → Integrations → Add MCP server**
+2. Enter `https://nexus.herman-tsago.tech/mcp`
+3. Claude opens the OAuth consent page — enter your `NEXUS_API_KEY`
+4. Done. Tokens are refreshed automatically.
+
+### LangChain (Python)
+
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "nexus": {
+        "transport": "streamable_http",
+        "url": "https://nexus.herman-tsago.tech/mcp",
+        "headers": {
+            "Authorization": "Bearer <your-api-key>"
+        }
+    }
+})
+```
+
+### curl
+
+```bash
+curl -X POST https://nexus.herman-tsago.tech/mcp \
+  -H "Authorization: Bearer <your-api-key>" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
 
 ---
 
@@ -373,6 +481,7 @@ Every code snippet above was retrieved verbatim from the indexed page —
 ├── requirements.txt
 ├── .env.template
 ├── src/
+│   ├── auth.py                # OAuth 2.0 + PKCE provider (static key + browser flow)
 │   ├── config.py              # pydantic-settings configuration
 │   ├── db.py                  # SQLite schema and query helpers
 │   ├── embeddings.py          # Embedding provider factory

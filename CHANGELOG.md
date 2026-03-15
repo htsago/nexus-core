@@ -11,6 +11,44 @@ Versions are dated; the project does not use semantic versioning at this stage.
 
 ---
 
+## [2026-03-15] — Authentication, OpenAI Embeddings & Reliability Fixes
+
+### Added
+
+- `src/auth.py` — `NexusOAuthProvider(OAuthProvider)`: full OAuth 2.0 + PKCE authorization
+  server with dynamic client registration (RFC 7591), consent UI at `/consent`, in-memory
+  access/refresh token management (TTLs: 1 h / 30 d), and PKCE code-challenge verification.
+- Static Bearer token mode: `load_access_token` accepts `NEXUS_API_KEY` directly via
+  `hmac.compare_digest`, enabling VS Code, LangChain, and curl to authenticate without OAuth.
+- `NEXUS_API_KEY` and `NEXUS_PUBLIC_URL` settings in `src/config.py`.
+- OAuth route block in `deploy/nginx.conf` (and live nginx config) to proxy
+  `/authorize`, `/token`, `/register`, `/consent`, `/.well-known/` to the MCP server.
+- `static/img/consent-page.png` — screenshot of the OAuth consent page.
+- README **Authentication** section (static Bearer + OAuth 2.0 + PKCE) and
+  **Connecting Clients** section (VS Code, Claude.ai, LangChain, curl).
+
+### Changed
+
+- `server.py`: wired `auth=NexusOAuthProvider()` into `FastMCP()`.
+- `src/embeddings.py`: switched default to OpenAI `text-embedding-3-small` with
+  `chunk_size=256` and `timeout=60` on all embedding paths.
+- `src/ingestion.py`: added `started_at` (monotonic clock) tracking per job; jobs stuck in
+  `indexing` state for more than 300 s are automatically retried on the next request.
+- `src/models.py`: added `error: Optional[str] = None` to `IngestResult` so ingestion
+  failures are visible to callers instead of being silently swallowed.
+- `.vscode/mcp.json`: updated to pass `Authorization: Bearer <key>` header.
+
+### Fixed
+
+- Ingestion jobs that hung indefinitely now time out and are re-triggered after 300 s.
+- Embedding calls that blocked forever now fail with a clear timeout error after 60 s.
+- Dynamic client registration was silently disabled (`ClientRegistrationOptions(enabled=False)`
+  default), causing Claude.ai to fail with "error connecting"; fixed by passing `enabled=True`.
+- nginx `location / { return 404; }` catch-all blocked all OAuth endpoints; resolved by
+  adding an explicit regex location block for OAuth paths.
+
+---
+
 ## [2026-03-15] — Professional Folder Structure
 
 ### Changed

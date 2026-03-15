@@ -11,6 +11,7 @@ if _HERE not in sys.path:
 
 from fastmcp import FastMCP
 
+from src.auth import NexusOAuthProvider
 from src.db import init_db
 
 init_db()
@@ -24,6 +25,7 @@ mcp = FastMCP(
     ),
     on_duplicate="error",
     mask_error_details=True,
+    auth=NexusOAuthProvider(),
 )
 
 import src.tools as _tools_pkg

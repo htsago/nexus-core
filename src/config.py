@@ -32,5 +32,11 @@ class NexusSettings(BaseSettings):
 
     NEXUS_SIMILARITY_THRESHOLD: float = 0.7
 
+    # Authentication — required Bearer token for every MCP request
+    NEXUS_API_KEY: str = ""
+
+    # Public base URL of this server (used for OAuth metadata endpoints)
+    NEXUS_PUBLIC_URL: str = "https://nexus.herman-tsago.tech"
+
 
 settings = NexusSettings()

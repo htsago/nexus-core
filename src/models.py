@@ -50,6 +50,8 @@ class IngestResult(BaseModel):
     checksum: str
     chunk_count: int
     ingested_at: str
+    job_id: Optional[str] = None
+    error: Optional[str] = None
 
 
 class SemanticQueryResult(BaseModel):

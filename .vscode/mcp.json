@@ -2,7 +2,10 @@
   "servers": {
     "nexus-core": {
       "type": "http",
-      "url": "http://localhost:8765/mcp"
+      "url": "https://nexus.herman-tsago.tech/mcp",
+      "headers": {
+        "Authorization": "Bearer Your API Key Here"
+      }
     }
   }
 }

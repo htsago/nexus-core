@@ -17,10 +17,11 @@ def get_embeddings():
                 openai_api_key="ollama",
                 model=model,
                 check_embedding_ctx_length=False,
+                timeout=60,
             )
         from langchain_ollama import OllamaEmbeddings
 
-        return OllamaEmbeddings(base_url=base_url, model=model)
+        return OllamaEmbeddings(base_url=base_url, model=model, timeout=60.0)
 
     if source == "OPENAI":
         if not settings.OPENAI_API_KEY:
@@ -30,6 +31,8 @@ def get_embeddings():
         return OpenAIEmbeddings(
             api_key=settings.OPENAI_API_KEY,
             model=settings.OPENAI_EMBEDDING_MODEL,
+            chunk_size=256,
+            timeout=60,
         )
 
     raise ValueError(
