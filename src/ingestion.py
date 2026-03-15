@@ -290,7 +290,7 @@ def ingest_url(framework: str, url: str) -> dict:
     ).split_text(clean_text)
     if not chunks:
         raise ValueError(f"Text splitter produced zero chunks for '{url}'.")
-    chunks = chunks[:50]  # cap per source to keep embedding time predictable
+    chunks = chunks[:300]  # cap per source to keep embedding time predictable
 
     # Deterministic job ID so the same (framework, url, checksum) never starts twice
     job_id = _sha256(f"{framework}:{url}:{checksum}")[:16]
