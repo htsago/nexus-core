@@ -37,7 +37,7 @@ a custom agent.
 
 ## Demo
 
-<video src="demo.webm" controls width="100%"></video>
+![NEXUS Demo](demo.gif)
 
 ---
 
