@@ -29,11 +29,15 @@ def _clean_html(html: str) -> str:
     for tag in _NOISE_TAGS:
         for el in soup.find_all(tag):
             el.decompose()
-    for el in soup.find_all(class_=True):
+    for el in list(soup.find_all(class_=True)):
+        if not el.attrs:
+            continue
         classes = " ".join(el.attrs.get("class", []) or [])
         if any(f in classes.lower() for f in _NOISE_CLASSES):
             el.decompose()
-    for el in soup.find_all(id=True):
+    for el in list(soup.find_all(id=True)):
+        if not el.attrs:
+            continue
         el_id = el.attrs.get("id", "") or ""
         if any(f in el_id.lower() for f in _NOISE_IDS):
             el.decompose()
