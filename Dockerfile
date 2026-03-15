@@ -14,8 +14,9 @@ RUN pip install --no-cache-dir \
         -r requirements.txt
 
 # Copy application source
-COPY server.py config.py db.py embeddings.py ingestion.py llm.py retrieval.py ./
+COPY server.py ./
 COPY src/ src/
+COPY tests/ tests/
 
 # Runtime data directory (mounted as volume)
 RUN mkdir -p /app/data/indices

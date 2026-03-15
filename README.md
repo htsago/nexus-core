@@ -387,6 +387,8 @@ Every code snippet above was retrieved verbatim from the indexed page —
 │       ├── compliance.py      # nexus_verify_compliance
 │       ├── metadata.py        # nexus_get_index_metadata
 │       └── refresh.py         # nexus_refresh_index
+├── tests/
+│   └── test_tools.py          # Integration tests against the live MCP endpoint
 └── data/
     ├── indices/               # FAISS index shards (one directory per framework)
     └── nexus.db               # SQLite metadata registry and FTS5 chunks
