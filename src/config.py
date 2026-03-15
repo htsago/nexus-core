@@ -30,7 +30,7 @@ class NexusSettings(BaseSettings):
     NEXUS_STORAGE_PATH: str = os.path.join(_BASE_DIR, "data", "indices")
     SQLITE_DB_PATH: str = os.path.join(_BASE_DIR, "data", "nexus.db")
 
-    NEXUS_SIMILARITY_THRESHOLD: float = 0.7
+    NEXUS_SIMILARITY_THRESHOLD: float = 0.35
 
     # Authentication — required Bearer token for every MCP request
     NEXUS_API_KEY: str = ""

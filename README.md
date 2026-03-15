@@ -91,7 +91,7 @@ Key variables:
 | `GROQ_API_KEY` | _(empty)_ | Required when `LLM_PROVIDER=GROQ` |
 | `NEXUS_STORAGE_PATH` | `data/indices` | Directory for FAISS index shards |
 | `SQLITE_DB_PATH` | `data/nexus.db` | SQLite database file |
-| `NEXUS_SIMILARITY_THRESHOLD` | `0.7` | Minimum relevance score for results |
+| `NEXUS_SIMILARITY_THRESHOLD` | `0.35` | Minimum relevance score for results |
 | `NEXUS_API_KEY` | _(empty)_ | Bearer token required for all MCP requests |
 | `NEXUS_PUBLIC_URL` | _(empty)_ | Public base URL of the server (e.g. `https://nexus.herman-tsago.tech`), used for OAuth metadata endpoints |
 

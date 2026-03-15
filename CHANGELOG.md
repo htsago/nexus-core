@@ -11,6 +11,25 @@ Versions are dated; the project does not use semantic versioning at this stage.
 
 ---
 
+## [2026-03-15] — Lower Similarity Threshold & Hybrid Lookup Improvement
+
+### Changed
+
+- `NEXUS_SIMILARITY_THRESHOLD` default lowered from `0.7` to `0.35`. The previous
+  value was too strict for factual/structural content (release notes, changelogs,
+  API reference tables) where relevant chunks typically score between 0.35–0.60.
+- `hybrid_lookup` now returns a structured `message` field when both the semantic
+  path and the FTS5 path produce zero results, making it easier for callers to
+  distinguish "empty index" from "below threshold".
+
+### Fixed
+
+- Release-notes / version-number queries returned no results with the old threshold
+  even after a successful ingestion of 50+ chunks. At 0.35 the correct chunks are
+  now returned.
+
+---
+
 ## [2026-03-15] — Authentication, OpenAI Embeddings & Reliability Fixes
 
 ### Added
