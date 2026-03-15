@@ -14,8 +14,7 @@ class NexusSettings(BaseSettings):
 
     TAVILY_API_KEY: str = ""
 
-    EMBEDDING_SOURCE: str = "LOCAL"
-    HUGGINGFACE_MODEL: str = "all-MiniLM-L6-v2"
+    EMBEDDING_SOURCE: str = "OLLAMA"
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     OLLAMA_MODEL: str = "nomic-embed-text"

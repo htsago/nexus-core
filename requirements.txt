@@ -6,7 +6,6 @@ langchain>=0.3.0
 langchain-community>=0.3.0
 langchain-openai>=0.2.0
 langchain-ollama>=0.2.0
-langchain-huggingface>=0.1.0
 
 # ── Vector store ──────────────────────────────────────────────────────────────
 faiss-cpu>=1.8.0
@@ -28,6 +27,4 @@ langchain-groq>=0.2.0
 python-dotenv>=1.0.0
 pydantic-settings>=2.3.0
 
-# ── Local embeddings (HuggingFace / sentence-transformers) ────────────────────
-sentence-transformers>=3.0.0
-torch>=2.2.0          # required by sentence-transformers (CPU-only build fine)
+

@@ -1,0 +1,29 @@
+services:
+  nexus:
+    build: .
+    container_name: nexus-core
+    restart: unless-stopped
+    # Bind only to loopback — nginx terminates TLS on the host
+    ports:
+      - "127.0.0.1:8765:8765"
+    env_file: .env
+    environment:
+      # Reach Ollama directly via its Docker network alias
+      OLLAMA_BASE_URL: "http://ollama-central-service:11434"
+      # Absolute paths inside the container
+      NEXUS_STORAGE_PATH: "/app/data/indices"
+      SQLITE_DB_PATH: "/app/data/nexus.db"
+    volumes:
+      # Persist FAISS indices and SQLite across container restarts
+      - ./data:/app/data
+    networks:
+      - ollama_default
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  ollama_default:
+    external: true

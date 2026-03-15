@@ -114,8 +114,7 @@ Key variables:
 | Variable | Default | Description |
 |---|---|---|
 | `TAVILY_API_KEY` | _(empty)_ | Required for `nexus_discover_source` |
-| `EMBEDDING_SOURCE` | `LOCAL` | `LOCAL`, `OLLAMA`, or `OPENAI` |
-| `HUGGINGFACE_MODEL` | `all-MiniLM-L6-v2` | Used when `EMBEDDING_SOURCE=LOCAL` |
+| `EMBEDDING_SOURCE` | `OLLAMA` | `OLLAMA` or `OPENAI` |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server endpoint |
 | `OLLAMA_EMBEDDING_MODEL` | `nomic-embed-text` | Ollama embedding model |
 | `OPENAI_API_KEY` | _(empty)_ | Required when `EMBEDDING_SOURCE=OPENAI` |
@@ -277,7 +276,6 @@ value. Re-ingestion is triggered only when the content has actually changed.
 
 | `EMBEDDING_SOURCE` | Model | Notes |
 |---|---|---|
-| `LOCAL` | `all-MiniLM-L6-v2` | Offline, CPU-only, approximately 90 MB |
 | `OLLAMA` | `nomic-embed-text` | Requires a running `ollama serve` instance |
 | `OPENAI` | `text-embedding-3-small` | Highest quality; requires `OPENAI_API_KEY` |
 
