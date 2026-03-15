@@ -19,7 +19,9 @@ def register(mcp) -> None:
         if result["status"] == "unchanged":
             refresh_action, message, prev = "no_change", "Source unchanged. Index is up to date.", None
         elif existing:
-            refresh_action, message, prev = "re_ingested", "Source changed. Index has been refreshed.", existing["checksum"]
+            refresh_action = "re_ingested"
+            message = "Source changed. Index has been refreshed."
+            prev = existing["checksum"]
         else:
             refresh_action, message, prev = "initial_ingest", "New source ingested for the first time.", None
 
