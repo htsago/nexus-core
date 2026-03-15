@@ -4,6 +4,8 @@ sources — the system never speculates beyond the available evidence.
 
 ---
 
+
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -34,59 +36,17 @@ a custom agent.
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    Client([MCP Client])
+**Discovery & Ingestion**
 
-    subgraph Discovery
-        DS[nexus_discover_source]
-        Tavily[(Tavily API)]
-        DS --> Tavily
-    end
+![Discovery and Ingestion flow](static/img/nexus_flow_1_ingest.svg)
 
-    subgraph Ingestion
-        IN[nexus_ingest_and_clean]
-        RI[nexus_refresh_index]
-        BS[BeautifulSoup4\nHTML cleaner]
-        SP[RecursiveCharacter\nTextSplitter]
-        IN --> BS --> SP
-        RI -->|checksum changed| IN
-    end
+**Retrieval**
 
-    subgraph Storage
-        FAISS[(FAISS\ndisk index)]
-        FTS5[(SQLite\nFTS5)]
-        META[(SQLite\nsources table)]
-        SP --> FAISS
-        SP --> FTS5
-        IN --> META
-    end
+![Retrieval flow](static/img/nexus_flow_2_retrieval.svg)
 
-    subgraph Retrieval
-        SQ[nexus_semantic_query]
-        HL[nexus_hybrid_lookup]
-        MD[nexus_get_index_metadata]
-        SQ -->|threshold-gated ANN| FAISS
-        HL -->|ANN + BM25 merge| FAISS
-        HL --> FTS5
-        MD --> META
-    end
+**Compliance**
 
-    subgraph Compliance
-        VC[nexus_verify_compliance]
-        LLM[Configured LLM\nOllama / OpenAI / Groq]
-        VC -->|RetrievalQA LCEL| FAISS
-        VC --> LLM
-    end
-
-    Client --> DS
-    Client --> IN
-    Client --> RI
-    Client --> SQ
-    Client --> HL
-    Client --> MD
-    Client --> VC
-```
+![Compliance flow](static/img/nexus_flow_3_compliance.svg)
 
 ---
 
@@ -269,6 +229,102 @@ value. Re-ingestion is triggered only when the content has actually changed.
 3. Call `nexus_semantic_query("fastapi", "<query>")` or `nexus_hybrid_lookup` to retrieve relevant chunks.
 4. Call `nexus_verify_compliance("fastapi", "<code>")` to get a deterministic compliance verdict.
 5. Call `nexus_refresh_index` periodically to detect and re-ingest changed pages.
+
+---
+
+## Usage Example — "How do I initialise an LLM in LangChain?"
+
+The following is a **real session** against the live NEXUS server at
+`https://nexus.herman-tsago.tech/mcp`. No training data was used — every answer
+comes exclusively from the indexed documentation.
+
+### Step 1 — Index the documentation
+
+```
+nexus_ingest_and_clean(
+    framework = "langchain",
+    url       = "https://python.langchain.com/docs/concepts/chat_models/"
+)
+```
+
+**Result:** `status: ingested`, `chunk_count: 54`
+
+### Step 2 — Query the index
+
+```
+nexus_hybrid_lookup(
+    framework = "langchain",
+    query     = "LLM ChatModel initialize instantiate example"
+)
+```
+
+**Top result** (`chunk_id: 2`, `similarity_score: 0.4762`, source: `python.langchain.com`):
+
+> *"The easiest way to get started with a standalone model in LangChain is to use
+> `init_chat_model` to initialize one from a chat model provider of your choice."*
+
+### Step 3 — Use the answer
+
+The retrieved chunks contain the following verified patterns:
+
+**Universal — `init_chat_model` (recommended)**
+
+```python
+from langchain.chat_models import init_chat_model
+
+# OpenAI
+model = init_chat_model("gpt-4.1")                    # OPENAI_API_KEY env var
+
+# Anthropic
+model = init_chat_model("claude-sonnet-4-6")           # ANTHROPIC_API_KEY env var
+
+# Azure OpenAI
+model = init_chat_model(
+    "azure_openai:gpt-4.1",
+    azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+)
+
+# AWS Bedrock
+model = init_chat_model(
+    "anthropic.claude-3-5-sonnet-20240620-v1:0",
+    model_provider="bedrock_converse",
+)
+
+# HuggingFace
+model = init_chat_model(
+    "microsoft/Phi-3-mini-4k-instruct",
+    model_provider="huggingface",
+    temperature=0.7,
+    max_tokens=1024,
+)
+```
+
+**Direct class instantiation**
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
+from langchain_ollama import ChatOllama
+
+model = ChatOpenAI(model="gpt-4.1", api_key="sk-...")
+model = ChatAnthropic(model="claude-sonnet-4-6")
+model = ChatOllama(model="llama3.2", base_url="http://localhost:11434")
+```
+
+**Invoke**
+
+```python
+from langchain_core.messages import SystemMessage, HumanMessage
+
+response = model.invoke([
+    SystemMessage("You are a helpful assistant."),
+    HumanMessage("Explain LangChain in one sentence."),
+])
+print(response.content)
+```
+
+Every code snippet above was retrieved verbatim from the indexed page —
+**not generated from model weights**.
 
 ---
 
