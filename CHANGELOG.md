@@ -11,6 +11,21 @@ Versions are dated; the project does not use semantic versioning at this stage.
 
 ---
 
+## [2026-03-15] — Professional Folder Structure
+
+### Changed
+
+- Removed six root-level backward-compatibility stub files (`config.py`, `db.py`,
+  `embeddings.py`, `ingestion.py`, `llm.py`, `retrieval.py`) that re-exported from `src/`.
+  All internal imports already target `src.*` directly; the stubs were redundant clutter.
+- Moved `test_tools.py` from the project root into a dedicated `tests/` directory
+  (`tests/test_tools.py`), following the standard Python project layout convention.
+- Updated `Dockerfile` to reflect the new layout: stub files removed from `COPY`, `tests/`
+  directory added.
+- Updated `README.md` project structure diagram to include `tests/` and drop the stubs.
+
+---
+
 ## [2026-03-14] — Clean Architecture Refactor
 
 ### Changed
