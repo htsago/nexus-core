@@ -83,7 +83,10 @@ def hybrid_lookup(framework: str, query: str, k: int = 5) -> dict[str, Any]:
             "query": query,
             "results": [],
             "total": 0,
-            "message": f"No results found (semantic threshold {settings.NEXUS_SIMILARITY_THRESHOLD}, no FTS5 matches) for '{query}'",
+            "message": (
+                f"No results found (semantic threshold {settings.NEXUS_SIMILARITY_THRESHOLD},"
+                f" no FTS5 matches) for '{query}'"
+            ),
         }
     return {"framework": framework, "query": query, "results": combined, "total": len(combined)}
 

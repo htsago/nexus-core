@@ -5,6 +5,7 @@ import hmac
 import secrets
 import time
 
+from fastmcp.server.auth import OAuthProvider
 from mcp.server.auth.provider import (
     AccessToken,
     AuthorizationCode,
@@ -13,7 +14,6 @@ from mcp.server.auth.provider import (
 )
 from mcp.server.auth.routes import ClientRegistrationOptions
 from mcp.shared.auth import OAuthClientInformationFull, OAuthToken
-from fastmcp.server.auth import OAuthProvider
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse, Response
 from starlette.routing import Route

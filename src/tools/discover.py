@@ -3,7 +3,7 @@ from typing import Optional
 from fastmcp.exceptions import ToolError
 
 from src.config import settings
-from src.models import DocCandidate, DiscoverResult
+from src.models import DiscoverResult, DocCandidate
 
 
 def register(mcp) -> None:
@@ -55,7 +55,10 @@ def register(mcp) -> None:
                 ))
 
         if not candidates:
-            raise ToolError(f"No documentation sources found for '{framework}'. Try a more specific name or provide a hint.")
+            raise ToolError(
+                f"No documentation sources found for '{framework}'."
+                " Try a more specific name or provide a hint."
+            )
 
         candidates.sort(key=lambda c: (c.priority, -c.score))
         return DiscoverResult(

@@ -4,6 +4,7 @@ Runs against the live streamable-http server on http://127.0.0.1:8765/mcp
 """
 import json
 import sys
+
 import httpx
 
 BASE = "http://127.0.0.1:8765/mcp"
@@ -228,7 +229,7 @@ res = call_tool("nexus_verify_compliance", {"framework": "fastapi", "code_snippe
 result_text = res.get("verification_result", "")
 sources = res.get("sources_consulted", [])
 print(f"  sources_consulted : {len(sources)}")
-verdict_line = next((l for l in result_text.splitlines() if "VERDICT" in l), result_text[:120])
+verdict_line = next((line for line in result_text.splitlines() if "VERDICT" in line), result_text[:120])
 print(f"  verdict           : {verdict_line.strip()}")
 if result_text:
     print("  ✓ Compliance check ran")

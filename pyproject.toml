@@ -1,0 +1,10 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+# server.py manipulates sys.path before importing src.* — E402 is intentional
+"server.py" = ["E402"]
