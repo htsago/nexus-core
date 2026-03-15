@@ -9,6 +9,7 @@ sources — the system never speculates beyond the available evidence.
 ## Table of Contents
 
 - [Overview](#overview)
+- [Demo](#demo)
 - [Architecture](#architecture)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -31,6 +32,12 @@ NEXUS Core ingests documentation from public URLs, stores chunks in a FAISS vect
 and a SQLite FTS5 full-text index, and answers queries exclusively from that indexed content.
 It is consumed by any MCP-compatible client such as Claude Desktop, VS Code with Copilot, or
 a custom agent.
+
+---
+
+## Demo
+
+<video src="demo.webm" controls width="100%"></video>
 
 ---
 
